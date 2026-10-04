@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local library data (seeded from data/books.ts on first API hit)
+data/library.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

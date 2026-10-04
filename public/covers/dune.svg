@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300">
+  <rect width="200" height="300" fill="#9C4A1F"/>
+  <rect y="0" width="200" height="10" fill="#F3E6CF"/>
+  <rect y="290" width="200" height="10" fill="#F3E6CF"/>
+  <circle cx="100" cy="120" r="52" fill="#7A3413"/>
+  <circle cx="100" cy="120" r="52" fill="none" stroke="#F3E6CF" stroke-width="2" opacity="0.7"/>
+  <circle cx="100" cy="120" r="38" fill="none" stroke="#F3E6CF" stroke-width="1.5" opacity="0.7"/>
+  <text x="100" y="205" text-anchor="middle" font-family="Georgia, serif" font-size="38" letter-spacing="12" fill="#F6E8CF">DUNE</text>
+  <text x="100" y="232" text-anchor="middle" font-family="Georgia, serif" font-size="13" letter-spacing="3" fill="#F6E8CF" opacity="0.9">FRANK HERBERT</text>
+</svg>

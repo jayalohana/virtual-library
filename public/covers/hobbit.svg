@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300">
+  <rect width="200" height="300" fill="#2E4A34"/>
+  <polygon points="100,60 150,150 50,150" fill="none" stroke="#C9A227" stroke-width="3"/>
+  <circle cx="100" cy="112" r="14" fill="#C9A227"/>
+  <rect y="176" width="200" height="6" fill="#C9A227"/>
+  <text x="100" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="24" letter-spacing="4" fill="#EFE3C2">THE HOBBIT</text>
+  <text x="100" y="244" text-anchor="middle" font-family="Georgia, serif" font-size="12" letter-spacing="3" fill="#EFE3C2" opacity="0.85">J.R.R. TOLKIEN</text>
+</svg>

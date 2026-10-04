@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 480">
+  <rect width="120" height="480" fill="#23211E"/>
+  <rect x="0" width="10" height="480" fill="#000" opacity="0.4"/>
+  <rect x="10" width="2" height="480" fill="#fff" opacity="0.14"/>
+  <rect x="18" y="26" width="84" height="2" fill="#C9A227"/>
+  <rect x="18" y="452" width="84" height="2" fill="#C9A227"/>
+  <text transform="translate(60 240) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="36" letter-spacing="10" fill="#C9A227">MEDITATIONS</text>
+  <text transform="translate(90 240) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="14" letter-spacing="4" fill="#EDE3C8" opacity="0.9">MARCUS AURELIUS</text>
+</svg>

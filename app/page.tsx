@@ -1,69 +1,197 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import type { Book } from "@/types/book";
+import {
+  matchesGenre,
+  matchesQuery,
+  myLibraryBooks,
+  tbrBooks,
+} from "@/lib/book-selectors";
+import { LibraryHeader } from "@/components/LibraryHeader";
+import { GenreFilters, type GenreFilter } from "@/components/GenreFilters";
+import { BookShelf } from "@/components/BookShelf";
+import { BookSheet } from "@/components/BookSheet";
+import { useBookCovers } from "@/hooks/useBookCovers";
+import {
+  RecommendationModal,
+  type Recommendation,
+} from "@/components/RecommendationModal";
+
+function isBookArray(value: unknown): value is Book[] {
+  return Array.isArray(value);
+}
 
 export default function Home() {
+  const [genre, setGenre] = useState<GenreFilter>("All");
+  const [query, setQuery] = useState("");
+  // Single source of truth — loaded from the API, never edited by hand.
+  const [books, setBooks] = useState<Book[]>([]);
+  const [selected, setSelected] = useState<Book | null>(null);
+  const [recommendOpen, setRecommendOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  // Progressive enhancement: resolve real covers once per book, merge + persist.
+  useBookCovers(books, (id, coverImageUrl) =>
+    setBooks((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, coverImageUrl } : b)),
+    ),
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/books")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: unknown) => {
+        if (!cancelled && isBookArray(data)) setBooks(data);
+      })
+      .catch(() => {
+        // API unreachable — shelf stays empty rather than crashing.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Derived shelves — no manually maintained fictionBooks/tbrBooks arrays.
+  const myLibrary = useMemo(() => myLibraryBooks(books), [books]);
+  const tbr = useMemo(() => tbrBooks(books), [books]);
+
+  const filteredMyLibrary = useMemo(
+    () =>
+      myLibrary.filter(
+        (b) => matchesGenre(b, genre) && matchesQuery(b, query),
+      ),
+    [myLibrary, genre, query],
+  );
+  const filteredTbr = useMemo(
+    () => tbr.filter((b) => matchesGenre(b, genre) && matchesQuery(b, query)),
+    [tbr, genre, query],
+  );
+
+  const handleRecommend = async (r: Recommendation) => {
+    setSubmitting(true);
+    setFormError(null);
+    try {
+      const res = await fetch("/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: r.title,
+          author: r.author,
+          name: r.name,
+          reason: r.reason,
+          genre: r.genre,
+        }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        setFormError(data?.error ?? "Could not shelve that book.");
+        return;
+      }
+      const created = (await res.json()) as Book;
+      // Appears on the To Be Read shelf immediately — no refresh needed.
+      setBooks((prev) => [...prev, created]);
+      setRecommendOpen(false);
+    } catch {
+      setFormError("Could not reach the library. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <div className="min-h-full">
+      <main>
+        {/* Hero viewport: intro centered in the upper ~60%, shelf along the bottom */}
+        <section className="flex min-h-[100svh] flex-col">
+          <LibraryHeader
+            volumeCount={myLibrary.length}
+            query={query}
+            onQuery={setQuery}
+            onRecommend={() => {
+              setFormError(null);
+              setRecommendOpen(true);
+            }}
+          />
+          <GenreFilters active={genre} onChange={setGenre} />
+
+          <div className="min-h-[6vh] flex-1 md:min-h-[10vh]" />
+
+          <div className="mt-auto">
+            <BookShelf
+              books={filteredMyLibrary}
+              query={query}
+              onSelect={setSelected}
+              showPlank={false}
+              sizeScale={1.08}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+        </section>
+
+        {/* Shelf 2 — below the first viewport, same visual language */}
+        {filteredTbr.length > 0 && (
+          <section className="mx-auto max-w-none pt-16 md:pt-24">
+            <p className="px-5 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7d6d]">
+              To be read
+            </p>
+            <div className="mt-6 md:mt-8">
+              <BookShelf
+                books={filteredTbr}
+                query={query}
+                onSelect={setSelected}
+                showPlank={false}
+                sizeScale={1.08}
+              />
+            </div>
+          </section>
+        )}
+
+        {/* quiet colophon — gives the page scroll room for the parallax */}
+        <section className="mx-auto max-w-2xl px-5 pb-20 pt-10 text-center">
+          <div className="flex items-center gap-4">
+            <span className="h-px flex-1 bg-[#2b2118]/12" />
+            <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7d6d]">
+              Colophon
+            </span>
+            <span className="h-px flex-1 bg-[#2b2118]/12" />
+          </div>
+          <p className="font-serif-display mt-6 text-[19px] italic leading-relaxed text-[#4a3222]">
+            “A library is not a list of books read, but a room of
+            conversations waiting to happen.”
+          </p>
+          <p className="mt-4 text-[13px] leading-relaxed text-[#5f5347]">
+            Everything here is read, being read, or waiting patiently. Filter
+            by genre, search a title, or leave something you think Jaya
+            should meet next.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setFormError(null);
+              setRecommendOpen(true);
+            }}
+            className="mt-6 h-10 border border-[#2b2118]/25 px-5 text-[13px] font-medium text-[#2b2118] transition-colors hover:bg-[#2b2118] hover:text-[#f6f1e7]"
           >
-            Documentation
-          </a>
-        </div>
+            Recommend a book
+          </button>
+          <p className="mt-10 text-[12px] text-[#a2977f]">
+            JAYA&rsquo;s Library — a quiet shelf on the internet.
+          </p>
+        </section>
       </main>
+
+      <BookSheet book={selected} onClose={() => setSelected(null)} />
+      <RecommendationModal
+        open={recommendOpen}
+        onClose={() => setRecommendOpen(false)}
+        onSubmit={handleRecommend}
+        submitting={submitting}
+        error={formError}
+      />
     </div>
   );
 }

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 480">
+  <rect width="120" height="480" fill="#5E2129"/>
+  <rect x="0" width="10" height="480" fill="#000" opacity="0.32"/>
+  <rect x="10" width="2" height="480" fill="#fff" opacity="0.18"/>
+  <rect x="18" y="24" width="84" height="1.5" fill="#F1E3CC" opacity="0.8"/>
+  <rect x="18" y="454" width="84" height="1.5" fill="#F1E3CC" opacity="0.8"/>
+  <text transform="translate(60 240) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="38" letter-spacing="12" fill="#F4E7D0">BELOVED</text>
+  <text transform="translate(90 240) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="13" letter-spacing="4" fill="#F4E7D0" opacity="0.85">TONI MORRISON</text>
+</svg>

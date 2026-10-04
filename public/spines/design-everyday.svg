@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 480">
+  <rect width="120" height="480" fill="#EFE8D8"/>
+  <rect x="0" width="10" height="480" fill="#000" opacity="0.2"/>
+  <rect x="10" width="2" height="480" fill="#fff" opacity="0.5"/>
+  <rect x="16" y="30" width="14" height="200" fill="#C44536"/>
+  <text transform="translate(56 250) rotate(-90)" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="24" letter-spacing="3" fill="#1E1B16">THE DESIGN OF EVERYDAY THINGS</text>
+  <text transform="translate(88 250) rotate(-90)" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="4" fill="#1E1B16">DON NORMAN</text>
+  <rect x="16" y="430" width="88" height="10" fill="#1E1B16"/>
+</svg>

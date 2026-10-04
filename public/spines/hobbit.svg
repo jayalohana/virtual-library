@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 480">
+  <rect width="120" height="480" fill="#2E4A34"/>
+  <rect x="0" width="10" height="480" fill="#000" opacity="0.3"/>
+  <rect x="10" width="2" height="480" fill="#fff" opacity="0.2"/>
+  <rect x="14" y="16" width="92" height="8" fill="#C9A227"/>
+  <rect x="14" y="456" width="92" height="8" fill="#C9A227"/>
+  <polygon points="60,396 78,428 42,428" fill="none" stroke="#C9A227" stroke-width="3"/>
+  <text transform="translate(58 250) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="34" letter-spacing="8" fill="#EFE3C2">THE HOBBIT</text>
+  <text transform="translate(90 250) rotate(-90)" text-anchor="middle" font-family="Georgia, serif" font-size="14" letter-spacing="6" fill="#EFE3C2" opacity="0.85">TOLKIEN</text>
+</svg>

@@ -49,8 +49,9 @@ export function BookSpine({
     setFailed((prev) => (prev.includes(src) ? prev : [...prev, src]));
 
   // Artwork priority: real spine photo → real front cover → generated spine.
-  // A front cover is never stretched into a spine: cover books get a wider
-  // face-out slot (~0.55 aspect) so the real artwork keeps its proportions.
+  // BOOK SIZE IS FIXED BY THE UI: the slot is always book.width × height.
+  // A front cover is cropped inside that shape (object-cover) — the image
+  // never resizes the book, so layout is stable before images even load.
   const spineOk =
     Boolean(book.spineImageUrl) &&
     !failed.includes(book.spineImageUrl as string);
@@ -58,9 +59,7 @@ export function BookSpine({
     !spineOk &&
     Boolean(book.coverImageUrl) &&
     !failed.includes(book.coverImageUrl as string);
-  const w = coverOk
-    ? Math.min(108, Math.max(64, Math.round(h * 0.55)))
-    : Math.round(book.width * k);
+  const w = Math.round(book.width * k);
   // Shadow lives on the button so it follows dock magnification either way.
   const dropShadow =
     scale > 1.1
@@ -113,11 +112,14 @@ export function BookSpine({
           />
         </span>
       ) : coverOk ? (
-        // Real front cover in a face-out slot — wider so the artwork keeps
-        // near-native proportions instead of being squeezed into a spine.
+        // Real front cover cropped inside the fixed book shape — same slot
+        // as every other book, so arrival never shifts the shelf.
         <span
           className="absolute inset-0 block overflow-hidden"
-          style={{ backgroundColor: book.spineColor }}
+          style={{
+            backgroundColor: book.spineColor,
+            borderRadius: "2px 3px 3px 2px",
+          }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- exact-size slot, nothing to optimize */}
           <img

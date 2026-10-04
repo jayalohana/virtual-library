@@ -95,13 +95,17 @@ export function BookShelf({
 
   // Fresh dataset → rebuild in the middle copy. Layout effect so the first
   // paint already sits inside copy B (no visible jump).
+  // Dep is the membership key (logical IDs), NOT the books array: cover art
+  // merging or parent re-renders must never yank the scroll position back.
+  // Only added/removed/reordered books rebuild + recenter.
+  const membershipKey = books.map((b) => b.id).join("|");
   useLayoutEffect(() => {
     measure(rendered.length);
     const el = viewportRef.current;
     const u = unitWidthRef.current;
     if (el && u > 0) el.scrollLeft = u;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [books]);
+  }, [membershipKey]);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse)");

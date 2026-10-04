@@ -17,7 +17,7 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "JAYA's Library",
+  title: "Jaya's Digital Library - Everything I've Read",
   description: "A collection of books I've read, own, and want to read.",
 };
 

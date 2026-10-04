@@ -150,38 +150,6 @@ export default function Home() {
           </section>
         )}
 
-        {/* quiet colophon — gives the page scroll room for the parallax */}
-        <section className="mx-auto max-w-2xl px-5 pb-20 pt-10 text-center">
-          <div className="flex items-center gap-4">
-            <span className="h-px flex-1 bg-[#2b2118]/12" />
-            <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7d6d]">
-              Colophon
-            </span>
-            <span className="h-px flex-1 bg-[#2b2118]/12" />
-          </div>
-          <p className="font-serif-display mt-6 text-[19px] italic leading-relaxed text-[#4a3222]">
-            “A library is not a list of books read, but a room of
-            conversations waiting to happen.”
-          </p>
-          <p className="mt-4 text-[13px] leading-relaxed text-[#5f5347]">
-            Everything here is read, being read, or waiting patiently. Filter
-            by genre, search a title, or leave something you think Jaya
-            should meet next.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setFormError(null);
-              setRecommendOpen(true);
-            }}
-            className="mt-6 h-10 border border-[#2b2118]/25 px-5 text-[13px] font-medium text-[#2b2118] transition-colors hover:bg-[#2b2118] hover:text-[#f6f1e7]"
-          >
-            Recommend a book
-          </button>
-          <p className="mt-10 text-[12px] text-[#a2977f]">
-            JAYA&rsquo;s Library — a quiet shelf on the internet.
-          </p>
-        </section>
       </main>
 
       <BookSheet book={selected} onClose={() => setSelected(null)} />

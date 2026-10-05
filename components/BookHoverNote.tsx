@@ -4,10 +4,6 @@ import { motion } from "framer-motion";
 import type { Book } from "@/types/book";
 import { formatYear } from "@/lib/book-selectors";
 
-/**
- * Warm paper annotation card that floats above the focused book.
- * Rendered inside the focused book's wrapper so it follows drift + scroll.
- */
 export function BookHoverNote({
   book,
   align = "center",
